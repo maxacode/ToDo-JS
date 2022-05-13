@@ -1,0 +1,15 @@
+
+/addtodo
+removeCompleted
+#  removeNotCompleted/TOD - 
+# delete/TOD - 
+# notCompleted/TOD 
+# completed/TOD 
+
+['Task1,Task2,Task3,Task4', 'compTask1,compTask2', 'delTask1,delTask2,dellAppended']
+
+
+{"notCompleted":["not1","not2","not3"],"completed":["completed1"],"deleted":["deleted1","delted2"]}
+
+{"notCompleted": ["not1", "not2", "not3"], "completed": ["completed1"], "deleted": ["deleted1", "delted2"]}
+{"notCompleted":["not1","not2","not3"],"completed":["completed1"],"deleted":["deleted1","delted2"]}

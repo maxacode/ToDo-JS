@@ -1,0 +1,42 @@
+Metadata-Version: 2.1
+Name: flask-liveserver
+Version: 0.0.4
+Summary: Live Server in Flask.
+Home-page: https://github.com/DevM63/flask_liveserver
+Author: m63#7150
+Author-email: jihonight@gmail.com
+License: UNKNOWN
+Platform: UNKNOWN
+Classifier: License :: OSI Approved :: MIT License
+Description-Content-Type: text/markdown
+Requires-Dist: watchdog
+Requires-Dist: flask
+Requires-Dist: flask-socketio
+
+flask_liveserver
+
+
+Quick Start
+-------
+```python
+from flask import Flask
+from liveserver import LiveServer
+
+app = Flask(__name__)
+
+ls = LiveServer(app)
+
+
+@app.route("/")
+def index():
+    return ls.render_template("index.html")
+
+
+ls.run("0.0.0.0", 8080)
+```
+
+License
+-------
+MIT Licence
+
+
