@@ -3,7 +3,6 @@ click==8.1.3
 Flask==2.1.2
 Flask-Autodoc==0.1.2
 Flask-Cors==3.0.10
-flask-liveserver==0.0.4
 Flask-SocketIO==5.1.2
 gunicorn==20.1.0
 itsdangerous==2.1.2
