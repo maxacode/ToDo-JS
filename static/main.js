@@ -42,8 +42,21 @@ const apiActions = "/addtodo/" // /addtodo/<action(notCompleted, completed, dele
 const apiSave = "/save" 
 class API {
     static async apiAllToDos() {
-        const response = await fetch(apiUrl+apiAllItmes);
-        const data = await response.json();
+        // const response = await fetch(apiUrl+apiAllItmes);
+        // const data = await response.json();
+
+        const fullURL = `${apiAllItmes}`;
+        // //const response = await fetch(fullURL);
+        // const response = await fetch(fullURL);
+        // const data = await response;
+         
+        const data = await fetch(fullURL).then(function (response) { return response.json(); }).then(function(response) {return response});
+        //cl(data);
+        const fullData = data["Attempting"] + data["Result"];
+        cl(fullData);
+        
+
+
         data["notCompleted"].forEach((singleTodo) => {
             UI.addItemToUI(singleTodo, "complete", '');
             })
