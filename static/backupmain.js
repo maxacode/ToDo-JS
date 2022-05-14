@@ -36,7 +36,7 @@ var allItems = document.getElementsByClassName('list-group-item');
 var output = document.getElementById('output');
  
 // API vars
-const apiUrl = "";
+const apiUrl = "http://127.0.0.1:5000";
 const apiAllItmes = "/loadsavedtodo"
 const apiActions = "/addtodo/" // /addtodo/<action(notCompleted, completed, deleted)><singleTodo>
 const apiSave = "/save" 
@@ -55,17 +55,11 @@ class API {
     //API to add/complte or remove items. 
     static async apiActions(action, singleTodo) {
         const fullURL = `${apiUrl}${apiActions}${action}/${singleTodo}`;
-        // //const response = await fetch(fullURL);
-        // const response = await fetch(fullURL);
-        // const data = await response;
-         
-        const data = await fetch(fullURL).then(function (response) { return response.json(); }).then(function(response) {return response});
-        //cl(data);
-        const fullData = data["Attempting"] + data["Result"];
-        return fullData
-        // cl("data var<>");
-        // cl(data["Result"]);
-        // console.log(data);
+        //const response = await fetch(fullURL);
+        const response = await fetch(fullURL);
+        const data = await response;
+
+        
         //const data = await response.text();
         // const data = await response.text();
         
@@ -94,14 +88,10 @@ class API {
     // api call to save to file
     static async apiSave() {
         const fullURL = apiSave;
-        // //const response = await fetch(fullURL);
-        // const response = await fetch(fullURL);
-        // const data = await response;
-        const data = await fetch(fullURL).then(function (response) { return response.json(); }).then(function(response) {return response});
-        //sconsole.log(data);
-        //output.innerText = data;
-        const fullData = data["Attempting"] + data["Result"];
-        return fullData
+        //const response = await fetch(fullURL);
+        const response = await fetch(fullURL);
+        const data = await response;
+
     }
 }
 
@@ -327,91 +317,16 @@ itemList.addEventListener('click', (e) => {
         
 
         UI.addItemToUI(singleTodo, "undo", "checked");
-        
+ 
         // Storage.addItemToStorageDeleted(singleTodo);
-        //API.apiActions("removeNotCompleted", singleTodo);
-        
-       //API.apiActions("completed", singleTodo);
-        //API.apiActionsJustAddToCompleted("completed", singleTodo);
-        //API.apiSave();
-        console.log("Before API Activity")
-        var apiActivity = function () {
-            API.apiActions("removeNotCompleted", singleTodo)
-                .then(function (response) {
-                    console.log(response);
-                    cl("341");
-                    output.innerHTML = String(response) + "\n";
-
-                    return API.apiActions("completed", singleTodo);
-                })
-                .then(function (response) {
-                    console.log(response);
-                    cl("346");
-                    output.innerText = String(response) + output.innerText;
-
-                    return API.apiSave();
-
-                })
-                .then(function (response) {
-                    console.log(response);
-                    output.innerText = String(response) + output.innerText;
-
-                    cl("353");
-                    
-                })
-                .then(function (response) {
-                    cl("Save checked");
-                })
-                .catch(function (error) {
-                    console.log("notChecked Error: " + error);
-                })
-        }
-
-        apiActivity()
-
-        // let firstApiAction = function(){
-        //     return new Promise( function(resolve, reject){
-        //         resolve(API.apiActionsJustAddToCompleted("completed", singleTodo));
-        //     });
-        // }
-
-
-       
+        API.apiActions("removeNotCompleted", singleTodo);
+        //API.apiActions("completed", singleTodo);
+        API.apiActionsJustAddToCompleted("completed", singleTodo);
+        API.apiSave();
+        cl("Save 315")
         // Storage.removeToDo(singleTodo);
         
-/*
 
-let firstFunction = function(){
-  return new Promise( function(resolve, reject){
-           resolve('Your cat is ');
-  });
-}
-
-let secondFunction = function(dataFromFirstFunction){
-  return new Promise( function(resolve, reject){
-    resolve(dataFromFirstFunction + 'crazy');
-      
-  });
-}
-
-firstFunction()
-  .then(function(data){
-  return secondFunction(data);
-  })
-  .then(function(data){
-    console.log(data);
-  });
-
-
-fetch('')
-  .then(function(response) {
-    return response.json();
-  })
-  .then(function(response) {
-     console.log(response);
-  });
-
-*/
 
     }
 

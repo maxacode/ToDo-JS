@@ -21,7 +21,10 @@ Pretty Pretty YouTube Channel -
 https://www.youtube.com/c/prettyprintedtutorials.
 
 
-0
+ 1. Fix appending to bottom then it refreshhes and its at top.. always add to top.
+ 2. refresh user screen if changes on server occurred.. or pull new data every X time. 
+3. Update mechanism for already entered tasks. 
+
 
 If you are trying to format this as HTML, I would suggest you add <br /> also to the returned text:
 
@@ -37,42 +40,31 @@ enumerate() is used to automatically count your entries for you.
 
 """
 
-# Strategy. 
-#/ Save ToDo's to server on a local machine in a text file. 
-
-
-# Routes
-# / Save ToDo and completed ToDo to backend server. 
-
-
-
-#passing arguments
-# @app.route(/here/<class1>/<todoItem>) or # @app.route(/here/<string:class1>/<string:todoItem>)
-# def here(class1, todoItem):
-# return class1, todoItem
-
-# / Load Todo and completed from backend server
+ 
+ 
 
 ################################################################
-# Last action: Trouble shooting why completing sometimes doesnt get added to the text file. the UI works. 
+# Last action: T
 
 ################################################################
 from flask import Flask, render_template
 import json
-from liveserver import LiveServer
+#from liveserver import LiveServer
+from datetime import datetime
 
 #from flask_autodoc.autodoc import Autodoc
 from flask_cors import CORS, cross_origin
 import sys
 
+cross_origin = ["*"]
 app = Flask(__name__)
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 #auto = Autodoc(app)
-ls = LiveServer(app)
+#ls = LiveServer(app)
 
 
-toDoFileName = "AllToDo.txt"
+toDoFileName = "AllToDo.json"
 
 notCompleted = 0
 completed = 0
@@ -83,16 +75,38 @@ lineBreak = "<br/>--------------------------------------------------------------
 
 @app.route('/')
 def index():
-    return ls.render_template('index.html')
+#    return ls.render_template('index.html')
+    return render_template('index.html')
 
 # Get the current saved ToDos form File 
 @app.route('/loadsavedtodo')
 def loadSavedToDo():
+    print(" &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& NEW RUN &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
     print(sys._getframe().f_code.co_name)
+    print(timeNow())
+    #everyTimeRequest()
+    return readFromFile()
 
-    return readFromFile("endpoint")
+# Save contents to file. 
+@app.route('/save')
+def saveToFile():
+    print("save Sleep BEFORE")
+    #time.sleep(.5)
+    global singleTodo2
 
-
+    print("save Sleep AFTER")
+    
+    print(sys._getframe().f_code.co_name)
+    print(timeNow())
+    print("Saving now")
+    allToDo = combineNCD()
+    writeToFile(allToDo)
+    print(f"Successfully Saved {singleTodo2}")
+    dataToReturn = {"Attempting": "Save to file", "Result": singleTodo2}
+    #return f"Attempting: {action} \n Result: {result} \n"
+    return dataToReturn
+    #return f"Successfully Saved {singleTodo}"
+     
 # Add a Todo - class and singleTodo required. class: notCompleted, completed, deleted
 # all options: removeCompleted/TOD
 #  removeNotCompleted/TOD - 
@@ -102,8 +116,11 @@ def loadSavedToDo():
 
 @app.route('/addtodo/<string:classNCD>/<string:singleTodo>')
 def addTodo(classNCD, singleTodo):
+    #saveToFile(singleTodo)
+    global singleTodo2
+    singleTodo2 = singleTodo
     print(sys._getframe().f_code.co_name)
-    everyTimeRequest()
+    #everyTimeRequest()
     action = "NULL"
     result = "NULL"
     global notCompleted, completed, deleted 
@@ -124,44 +141,87 @@ def addTodo(classNCD, singleTodo):
         result = addSingleTodo(classNCD, singleTodo)
     else:
         action = "ELSE AddTODO"
-        
-    writeToFile(allToDo)
+    #allToDo = combineNCD()
+    #print(" --- after COmbineNCD 129 --- ")
+    #print(allToDo)
+    # writeToFile(allToDo)
+    # print(" --- after write to file 132 --- ")
+    # print(allToDo)
     print(f"Attempting: {action} \n Result: {result} \n")
-    return f"Attempting: {action} \n Result: {result} \n"
+    print(" @@@@@ DONE?? ")
+    dataToReturn = {"Attempting": action, "Result": result}
+    #return f"Attempting: {action} \n Result: {result} \n"
+    return dataToReturn
     # Current ToDo's: {readFromFile('endpoint')} \n {lineBreak}"
 
+def timeNow():
+    second = datetime.now()
+    timee2 = second.minute, second.second, second.microsecond
+    return f"^^^^^^ TIME: {timee2} ^^^^^"
 
 # !! Function to read the file contents and assemble on every request
 def everyTimeRequest():
     print(sys._getframe().f_code.co_name)
+    print(timeNow())
+    
   #read data from file
     global notCompleted, completed, deleted 
     notCompleted, completed, deleted = readFromFile()
-    combineNCD()
+    #combineNCD()
 
 # !! Function to read all the JSON data from File
 def readFromFile(sourceFunction=None):
     print(sys._getframe().f_code.co_name)
+    print(" --- start of readFromFile 150 --- ")
+    print(allToDo)
+    print(timeNow())
+    global notCompleted, completed, deleted 
 
     with open(toDoFileName, encoding='utf-8-sig', errors='ignore') as r:
         try:
             data = json.load(r, strict=False)
-            if sourceFunction == "endpoint":
-                return data
-            else:
-                return data["notCompleted"], data["completed"], data["deleted"]
+            notCompleted = data['notCompleted']
+            completed = data['completed']
+            deleted = data['deleted']
+            print("Done reading from File ")
+            print(data)
+            return data
         except Exception as e:
             print("error reading from file: \n " + str(e))
+            print(timeNow())
+
             return [], [], []
+        
+        # if sourceFunction == "endpoint":
+        #     print(" --- endpoint readFromFile 159 --- ")
+        #     print(data)
+        #     print(timeNow())
+
+        #     return data
+        # else:
+        #     print(" --- else 163 --- ")
+        #     print(data)
+        #     print(timeNow())
+        #     return data["notCompleted"], data["completed"], data["deleted"]
+    
+            
 
             
 # !!function to write to file the finished JSON data
 def writeToFile(allToDo):
     print(sys._getframe().f_code.co_name)
+    print(" --- write to fil 174 --- ")
+    print(allToDo)
+    print(timeNow())
 
     try:
-        with open(toDoFileName, "w+") as r:
-            json.dump(allToDo, r)
+        with open(toDoFileName, "w") as r:
+            j = json.dumps(allToDo)
+            print(" --- json.dumps alltodo 179 --- ")
+            print(j)
+            print(timeNow())
+
+            r.write(j)
     except Exception as e:
         return f"Errorr in *writeToFile*: {e}"
     else:
@@ -170,20 +230,21 @@ def writeToFile(allToDo):
 # !! Function to add to notCompleted
 def addToNotCompleted(singleToDo):
     print(sys._getframe().f_code.co_name)
-
+    print(timeNow())
     notCompleted.insert(0,singleToDo)
     return "addToNotCompleted Successfully"
 
 # !! Function to add to completed
 def addToCompleted(singleToDo):
     print(sys._getframe().f_code.co_name)
+    print(timeNow())
     completed.insert(0, singleToDo)
     return "addToCompleted Successfully"
 
 # !! Function to add to deleted
 def addToDeleted(singleToDo):
     print(sys._getframe().f_code.co_name)
-
+    print(timeNow())
     deleted.insert(0, singleToDo)
     return "addToDeleted Successfully"
 
@@ -192,7 +253,7 @@ def addToDeleted(singleToDo):
 # !! Function that takes in a TODo and a Class (notCompleted, completed, deleted) and adds it to class
 def addSingleTodo(whereTo, singleToDo):
     print(sys._getframe().f_code.co_name)
-
+    print(timeNow())
     if whereTo == "notCompleted":
         #return addToNotCompleted(singleToDo)
         notCompleted.insert(0,singleToDo)
@@ -210,40 +271,55 @@ def addSingleTodo(whereTo, singleToDo):
     else:
         print("ERROR in addSingleToDo Funciton")  
         return "error in addSingleToDo Funciton"
+
+
 # !! Function that takes in a TODO and Class (notCompleted, completed, deleted) and removed is form Class
 def removeSingleTodo(whereFrom, singleToDo):
     print(sys._getframe().f_code.co_name)
-
+    print(timeNow())
     global notCompleted, completed, deleted
     try: 
         if whereFrom == "notCompleted":
+            print('!!!!!!!!!!!! Remving from NotCompleted')
             notCompleted.remove(singleToDo)
             #addSingleTodo("deleted", singleToDo)
+            print(notCompleted)
+            print(timeNow())
+
             return "Removed Successfully #notCompleted"
         elif whereFrom == "completed":
             completed.remove(singleToDo)
+            print(completed)
+            print(timeNow())
             #addSingleTodo("deleted", singleToDo)
+
             return "Removed Successfully #completed"
         elif whereFrom == "deleted":
             deleted.remove(singleToDo)
             return "Deleted Successfully"
         else:
             print("ERROR in Remove Single TODO")
-    except ValueError:
-        return (f"{singleToDo} | is not in: {whereFrom}")
+            print(timeNow())
+    except Exception as e:
+        return (f"{singleToDo} | is not in: {whereFrom} | e = {e}")
 
 # !! Function to combine all classesNCD 
 def combineNCD():
     print(sys._getframe().f_code.co_name)
-
+    print(timeNow())
     global notCompleted, completed, deleted, allToDo
 
     allToDo = {"notCompleted": notCompleted, "completed": completed, "deleted": deleted}
+    print(" --- CombineNCD --- ")
+    print(allToDo)
+    print(timeNow())
+    return allToDo
+   
 
 if __name__ == "__main__":
 #    app.run(debug=True)
     print(sys._getframe().f_code.co_name)
-
+    print(timeNow())
     app.run()
 
     ls.run("0.0.0.0", 8080)
