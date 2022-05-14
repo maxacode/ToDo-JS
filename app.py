@@ -24,7 +24,7 @@ https://www.youtube.com/c/prettyprintedtutorials.
  1. Fix appending to bottom then it refreshhes and its at top.. always add to top.
  2. refresh user screen if changes on server occurred.. or pull new data every X time. 
 3. Update mechanism for already entered tasks. 
-
+4. / is taken litterly so it break entrr.  change to POST form? 
 
 If you are trying to format this as HTML, I would suggest you add <br /> also to the returned text:
 
@@ -104,6 +104,12 @@ def saveToFile():
     print(f"Successfully Saved {singleTodo2}")
     dataToReturn = {"Attempting": "Save to file", "Result": singleTodo2}
     #return f"Attempting: {action} \n Result: {result} \n"
+    print("Que after save")
+    print(qLine)
+    print("Que after Pop")
+    qLine.pop(0)
+    qLine.pop(0)
+    print(qLine)
     return dataToReturn
     #return f"Successfully Saved {singleTodo}"
      
@@ -114,8 +120,15 @@ def saveToFile():
 # notCompleted/TOD
 # completed/TOD 
 
+qLine = []
 @app.route('/addtodo/<string:classNCD>/<string:singleTodo>')
 def addTodo(classNCD, singleTodo):
+    print("Que before append")
+    print(qLine)
+    print("Que after append")
+    qLine.append((classNCD,singleTodo))
+    print(qLine)
+
     #saveToFile(singleTodo)
     global singleTodo2
     singleTodo2 = singleTodo

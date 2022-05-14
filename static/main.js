@@ -101,12 +101,24 @@ class API {
         //sconsole.log(data);
         //output.innerText = data;
         const fullData = data["Attempting"] + data["Result"];
-        return fullData
+        cl("save then get TODO.")
+        return data
+        
     }
 }
 
 class UI {
     static getToDo() {
+        // data["completed"].forEach((singleTodo) => {
+        //     UI.addItemToUI(singleTodo, "undo", 'checked');
+        //     });
+        // var i = 0
+
+        // for (i = 0; i < allItems.length; i++) {
+        //         allItems[i].removeChild(singleTodo);
+        //     };
+        //console.log(allItems.length); 
+        
         API.apiAllToDos();
         //const toDo = Storage.getToDo();
         // let b = apiAllToDos();
@@ -355,7 +367,7 @@ itemList.addEventListener('click', (e) => {
                 .then(function (response) {
                     console.log(response);
                     output.innerText = String(response) + output.innerText;
-
+                    
                     cl("353");
                     
                 })
@@ -476,6 +488,7 @@ itemsCompleted.addEventListener('click', (e) => {
 
 function filter() {
     userInput = searchBox.value;
+    cl(userInput);
     //console.log(allItems.length); 
     for (x = 0; x < allItems.length; x++) {
         if (allItems[x].innerText.toLowerCase().indexOf(userInput.toLowerCase()) == '-1') {
