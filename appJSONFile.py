@@ -86,14 +86,6 @@ def resolve_task(task_id):
     db.session.commit()
     return redirect('/')
     https://github.com/abhishek305/Flask-ToDO-App-Using-SQLAlchemy/blob/master/app.py
-
-DB
-    Key
-    Value
-    Done?
-    Date Created
-
-
 """
 
 
@@ -104,10 +96,11 @@ DB
 # Last action: T
 
 ################################################################
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 import json
 #from liveserver import LiveServer
 from datetime import datetime
+import logging
 
 #from flask_autodoc.autodoc import Autodoc
 from flask_cors import CORS, cross_origin
@@ -133,7 +126,11 @@ lineBreak = "<br/>--------------------------------------------------------------
 @app.route('/')
 def index():
 #    return ls.render_template('index.html')
-    return render_template('index.html')
+    data = request
+    app.logger.info(data)
+
+    logging.warning(request)
+    return render_template('index-JSONFile.html')
 
 # Get the current saved ToDos form File 
 @app.route('/loadsavedtodo')
@@ -161,12 +158,12 @@ def saveToFile():
     print(f"Successfully Saved {singleTodo2}")
     dataToReturn = {"Attempting": "Save to file", "Result": singleTodo2}
     #return f"Attempting: {action} \n Result: {result} \n"
-    print("Que after save")
-    print(qLine)
-    print("Que after Pop")
-    qLine.pop(0)
-    qLine.pop(0)
-    print(qLine)
+    # print("Que after save")
+    # print(qLine)
+    # print("Que after Pop")
+    # qLine.pop(0)
+    # qLine.pop(0)
+    # print(qLine)
     return dataToReturn
     #return f"Successfully Saved {singleTodo}"
      
@@ -181,10 +178,10 @@ qLine = []
 @app.route('/addtodo/<string:classNCD>/<string:singleTodo>')
 def addTodo(classNCD, singleTodo):
     print("Que before append")
-    print(qLine)
-    print("Que after append")
-    qLine.append((classNCD,singleTodo))
-    print(qLine)
+    # print(qLine)
+    # print("Que after append")
+    # qLine.append((classNCD,singleTodo))
+    # print(qLine)
 
     #saveToFile(singleTodo)
     global singleTodo2
@@ -389,10 +386,21 @@ def combineNCD():
 if __name__ == "__main__":
 #    app.run(debug=True)
     print(sys._getframe().f_code.co_name)
-    print(timeNow())
+    ## File logging:
+    logApp = logging.basicConfig(format= '%(levelname)s: %(asctime)s:%(message)s', filename="appLog.log", encoding="utf-8", level=logging.DEBUG,  datefmt='%m/%d/%A %I:%M:%S %p')
+
+    logRequest = logging.basicConfig(format= '%(levelname)s: %(asctime)s:%(message)s', filename="webRequests.log", encoding="utf-8", level=logging.DEBUG,  datefmt='%m/%d/%A %I:%M:%S %p')
+
+    ch = logging.StreamHandler()
+    logApp.addHandler(ch)
+    logRequest.addHandler(ch)
+
+    logApp.info(timeNow())
+    logRequest.info(timeNow())
+    #print(timeNow())
     app.run()
 
-    ls.run("0.0.0.0", 8080)
+    #.run("0.0.0.0", 8080)
   
 
     # #removeSingleTodo("notCompleted", "not3")

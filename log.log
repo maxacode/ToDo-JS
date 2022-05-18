@@ -1,0 +1,12 @@
+ * Serving Flask app 'appJSONFile.py' (lazy loading)
+ * Environment: development
+ * Debug mode: on
+ &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& NEW RUN &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+loadSavedToDo
+^^^^^^ TIME: (17, 7, 443287) ^^^^^
+readFromFile
+ --- start of readFromFile 150 --- 
+0
+^^^^^^ TIME: (17, 7, 443299) ^^^^^
+Done reading from File 
+{'notCompleted': ['123'], 'completed': ['sad'], 'deleted': []}
