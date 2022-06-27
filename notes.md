@@ -10,7 +10,10 @@
 
 ## Flash 
 - pip3 install flask
-- from flask import flash
+- from flask import flask
+
+pip install -r requirements.txt
+
 
 - export FLASK_APP=app.py
 - export FLASK_ENV=development
