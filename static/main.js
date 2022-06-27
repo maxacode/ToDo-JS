@@ -547,11 +547,14 @@ form.addEventListener('submit', (e) => {
     e.preventDefault();
     const itemToAdd = textBox.value;
     //console.log(itemToAdd);
+    var itemToAddFiltered = itemToAdd.replace(/\//g, "-");
+
     //sending it to UI to create the new item elemnet
-    UI.addItemToUI(itemToAdd, 'complete', '');
+    UI.addItemToUI(itemToAddFiltered, 'complete', '');
     //storing as a string just the text
     //Storage.addItemToStorage(itemToAdd);
-    API.apiActions("notCompleted", itemToAdd);
+    cl(itemToAddFiltered);
+    API.apiActions("notCompleted", itemToAddFiltered);
     API.apiSave();
 
 });
